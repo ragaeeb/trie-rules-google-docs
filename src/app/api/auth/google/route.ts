@@ -1,7 +1,7 @@
 import { createOAuth2Client, generateAuthUrl } from '@/lib/google-client';
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 
-export async function GET(req: NextRequest) {
+export async function GET() {
     try {
         const client = createOAuth2Client();
         const authUrl = generateAuthUrl(client);

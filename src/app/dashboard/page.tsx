@@ -1,5 +1,6 @@
 import { DocumentsList } from '@/components/DocumentsList';
 import { getSession } from '@/lib/session';
+import Image from 'next/image';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 
@@ -20,7 +21,7 @@ export default async function DashboardPage() {
                 {userInfo && (
                     <div className="flex items-center gap-4">
                         <div className="flex items-center gap-2">
-                            <img alt={userInfo.name} className="w-8 h-8 rounded-full" src={userInfo.picture} />
+                            <Image alt={userInfo.name} className="w-8 h-8 rounded-full" src={userInfo.picture} />
                             <span>{userInfo.name}</span>
                         </div>
                         <Link
