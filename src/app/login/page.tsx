@@ -3,7 +3,8 @@ import { getSession } from '@/lib/session';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 
-export default async function LoginPage({ searchParams }: { searchParams: { error?: string } }) {
+export default async function LoginPage(props: { searchParams: Promise<{ error?: string }> }) {
+    const searchParams = await props.searchParams;
     const session = await getSession();
 
     if (session.isLoggedIn) {
