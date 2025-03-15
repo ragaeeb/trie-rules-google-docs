@@ -21,7 +21,13 @@ export default async function DashboardPage() {
                 {userInfo && (
                     <div className="flex items-center gap-4">
                         <div className="flex items-center gap-2">
-                            <Image alt={userInfo.name} className="w-8 h-8 rounded-full" src={userInfo.picture} />
+                            <Image
+                                alt={userInfo.name}
+                                className="w-8 h-8 rounded-full"
+                                height={100}
+                                src={userInfo.picture}
+                                width={100}
+                            />
                             <span>{userInfo.name}</span>
                         </div>
                         <Link

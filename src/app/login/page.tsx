@@ -50,6 +50,7 @@ function getErrorMessage(errorCode: string): string {
         default: 'An error occurred. Please try again.',
         no_code: 'No authentication code received. Please try again.',
         no_token: 'Unable to obtain access token. Please try again.',
+        session_expired: 'Your session has expired. Please sign in again.',
     };
 
     return errorMessages[errorCode] || errorMessages.default;

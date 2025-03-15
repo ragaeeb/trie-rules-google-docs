@@ -1,10 +1,6 @@
+import { FullDocument } from '@/types/document';
 import { OAuth2Client } from 'google-auth-library';
 import { google } from 'googleapis';
-
-export type Document = {
-    id: string;
-    name: string;
-};
 
 const SCOPES = [
     'https://www.googleapis.com/auth/documents',
@@ -57,7 +53,7 @@ export const listDocuments = async (accessToken: string): Promise<Document[]> =>
     return (response.data.files as Document[]) || [];
 };
 
-export const getDocument = async (accessToken: string, documentId: string): Promise<Document> => {
+export const getDocument = async (accessToken: string, documentId: string): Promise<FullDocument> => {
     const client = createOAuth2Client();
     client.setCredentials({ access_token: accessToken });
 
@@ -67,7 +63,7 @@ export const getDocument = async (accessToken: string, documentId: string): Prom
         documentId,
     });
 
-    return response.data as Document;
+    return response.data as FullDocument;
 };
 
 export const formatDocument = async (

@@ -1,5 +1,6 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 type Document = {
@@ -8,6 +9,8 @@ type Document = {
 };
 
 export const DocumentsList = () => {
+    const router = useRouter();
+
     const [documents, setDocuments] = useState<Document[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<null | string>(null);
@@ -20,7 +23,16 @@ export const DocumentsList = () => {
                 const response = await fetch('/api/documents');
 
                 if (!response.ok) {
-                    throw new Error(`Error ${response.status}: ${response.statusText}`);
+                    const errorData = await response.json();
+
+                    // Check if session expired
+                    if (response.status === 401 && errorData.sessionExpired) {
+                        // Redirect to login page
+                        router.push('/login?error=session_expired');
+                        return;
+                    }
+
+                    throw new Error(errorData.error || `Error ${response.status}: ${response.statusText}`);
                 }
 
                 const data = await response.json();
@@ -34,11 +46,18 @@ export const DocumentsList = () => {
         };
 
         fetchDocuments();
-    }, []);
+    }, [router]);
 
-    const handleSelectDocument = (doc: Document) => {
-        setSelectedDoc(doc);
-    };
+    useEffect(() => {
+        const previewFormatting = async (doc: Document) => {
+            const response = await (await fetch(`/api/documents/${doc.id}/format`)).json();
+            console.log('response', response);
+        };
+
+        if (selectedDoc) {
+            previewFormatting(selectedDoc);
+        }
+    }, [selectedDoc]);
 
     if (loading) {
         return <div className="flex justify-center p-8">Loading documents...</div>;
@@ -70,7 +89,7 @@ export const DocumentsList = () => {
                                     selectedDoc?.id === doc.id ? 'bg-blue-50' : ''
                                 }`}
                                 key={doc.id}
-                                onClick={() => handleSelectDocument(doc)}
+                                onClick={() => setSelectedDoc(doc)}
                             >
                                 <div className="flex items-center">
                                     <svg className="w-5 h-5 mr-2 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
