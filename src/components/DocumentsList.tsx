@@ -45,12 +45,14 @@ export const DocumentsList = () => {
             }
         };
 
+        console.log('fetch documents');
         fetchDocuments();
     }, [router]);
 
     useEffect(() => {
         const previewFormatting = async (doc: Document) => {
             try {
+                console.log('formatting doc');
                 const response = await fetch(`/api/documents/${doc.id}/format`);
                 if (!response.ok) {
                     // Handle error properly without redirecting
@@ -101,6 +103,7 @@ export const DocumentsList = () => {
                                 }`}
                                 key={doc.id}
                                 onClick={(e) => {
+                                    console.log('clicked', doc.id);
                                     e.preventDefault();
                                     setSelectedDoc(doc);
                                 }}

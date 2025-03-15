@@ -6,8 +6,10 @@ import { redirect } from 'next/navigation';
 
 export default async function DashboardPage() {
     const session = await getSession();
+    console.log('session.isLoggedin', session.isLoggedIn);
 
     if (!session.isLoggedIn) {
+        console.log('redirect to login');
         redirect('/login');
     }
 

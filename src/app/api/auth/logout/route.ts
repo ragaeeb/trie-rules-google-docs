@@ -1,8 +1,13 @@
 import { clearSession } from '@/lib/session';
-import { NextResponse } from 'next/server';
+import { headers } from 'next/headers';
+import { NextRequest, NextResponse } from 'next/server';
 
-export async function GET() {
+export async function GET(request: NextRequest) {
     try {
+        console.log('Logout endpoint called');
+        console.log('Request headers:', JSON.stringify(headers()));
+        console.log('Request referrer:', request.headers.get('referer'));
+
         await clearSession();
         return NextResponse.redirect(`${process.env.NEXT_PUBLIC_BASE_URL}/login`);
     } catch (error) {
