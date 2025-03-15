@@ -53,27 +53,11 @@ export const DocumentsList = () => {
         const previewFormatting = async (doc: Document) => {
             try {
                 console.log('formatting doc');
-                // Use a more explicit fetch with additional options
-                const response = await fetch(`/api/documents/${doc.id}/format`, {
-                    credentials: 'same-origin',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        // Add a custom header to help debug
-                        'X-Request-Type': 'ajax-call',
-                    },
-                    method: 'GET',
-                    // Most importantly, specify this is not a navigation
-                    mode: 'same-origin',
-                });
-
-                if (!response.ok) {
-                    console.error('Error fetching format preview:', await response.text());
-                    return;
-                }
-                const data = await response.json();
+                const data = await (await fetch(`/api/documents/${doc.id}/format`)).json();
                 console.log('response', data);
             } catch (err) {
                 console.error('Error in preview formatting:', err);
+                // Don't navigate away, just handle the error locally
             }
         };
 
@@ -112,11 +96,7 @@ export const DocumentsList = () => {
                                     selectedDoc?.id === doc.id ? 'bg-blue-50' : ''
                                 }`}
                                 key={doc.id}
-                                onClick={(e) => {
-                                    console.log('clicked', doc.id);
-                                    e.preventDefault();
-                                    setSelectedDoc(doc);
-                                }}
+                                onClick={() => setSelectedDoc(doc)}
                             >
                                 <div className="flex items-center">
                                     <svg className="w-5 h-5 mr-2 text-blue-600" fill="currentColor" viewBox="0 0 20 20">

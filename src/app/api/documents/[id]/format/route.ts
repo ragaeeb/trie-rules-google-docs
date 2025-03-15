@@ -20,11 +20,10 @@ const getRules = async (): Promise<TrieNode> => {
 
 export async function GET(req: NextRequest, props: { params: Promise<{ id: string }> }) {
     const params = await props.params;
-    console.log('GET', params);
+    console.log('/documents/id/format', params);
 
     try {
         const loggedIn = await isUserLoggedIn();
-        console.log('loggedIn', loggedIn);
 
         if (!loggedIn) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
