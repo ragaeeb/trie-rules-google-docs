@@ -32,8 +32,6 @@ export async function GET(req: NextRequest, props: { params: Promise<{ id: strin
 
         const accessToken = await getValidAccessToken();
 
-        console.log('accessToken', accessToken);
-
         if (!accessToken) {
             return NextResponse.json({ error: 'No access token available' }, { status: 401 });
         }

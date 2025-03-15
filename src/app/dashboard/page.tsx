@@ -1,12 +1,11 @@
 import { DocumentsList } from '@/components/DocumentsList';
+import { LogoutButton } from '@/components/LogoutButton';
 import { getSession } from '@/lib/session';
 import Image from 'next/image';
-import Link from 'next/link';
 import { redirect } from 'next/navigation';
 
 export default async function DashboardPage() {
     const session = await getSession();
-    console.log('session', session);
 
     if (!session.isLoggedIn) {
         redirect('/login');
@@ -33,17 +32,7 @@ export default async function DashboardPage() {
                         </div>
                     </div>
                 )}
-                {userInfo && (
-                    <Link
-                        className="px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded-md text-sm"
-                        href="/api/auth/logout"
-                        onClick={() => {
-                            console.log('Logout link clicked');
-                        }}
-                    >
-                        Sign Out
-                    </Link>
-                )}
+                {userInfo && <LogoutButton />}
             </header>
 
             <div className="flex-1">
