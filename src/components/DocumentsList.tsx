@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
@@ -14,7 +15,6 @@ export const DocumentsList = () => {
     const [documents, setDocuments] = useState<Document[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<null | string>(null);
-    const [selectedDoc, setSelectedDoc] = useState<Document | null>(null);
 
     useEffect(() => {
         const fetchDocuments = async () => {
@@ -49,23 +49,6 @@ export const DocumentsList = () => {
         fetchDocuments();
     }, [router]);
 
-    useEffect(() => {
-        const previewFormatting = async (doc: Document) => {
-            try {
-                console.log('formatting doc');
-                const data = await (await fetch(`/api/documents/${doc.id}/format`)).json();
-                console.log('response', data);
-            } catch (err) {
-                console.error('Error in preview formatting:', err);
-                // Don't navigate away, just handle the error locally
-            }
-        };
-
-        if (selectedDoc) {
-            previewFormatting(selectedDoc);
-        }
-    }, [selectedDoc]);
-
     if (loading) {
         return <div className="flex justify-center p-8">Loading documents...</div>;
     }
@@ -91,15 +74,16 @@ export const DocumentsList = () => {
                     </div>
                     <ul className="divide-y">
                         {documents.map((doc) => (
-                            <li
-                                className={`px-4 py-3 cursor-pointer hover:bg-gray-50 transition-colors ${
-                                    selectedDoc?.id === doc.id ? 'bg-blue-50' : ''
-                                }`}
-                                key={doc.id}
-                                onClick={() => setSelectedDoc(doc)}
-                            >
-                                <div className="flex items-center">
-                                    <svg className="w-5 h-5 mr-2 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                            <li key={doc.id}>
+                                <Link
+                                    className="px-4 py-3 flex items-center hover:bg-gray-50 transition-colors block"
+                                    href={`/documents/${doc.id}`}
+                                >
+                                    <svg
+                                        className="w-5 h-5 mr-2 text-blue-600 flex-shrink-0"
+                                        fill="currentColor"
+                                        viewBox="0 0 20 20"
+                                    >
                                         <path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4z" />
                                         <path
                                             clipRule="evenodd"
@@ -108,7 +92,7 @@ export const DocumentsList = () => {
                                         />
                                     </svg>
                                     <span className="truncate">{doc.name}</span>
-                                </div>
+                                </Link>
                             </li>
                         ))}
                     </ul>

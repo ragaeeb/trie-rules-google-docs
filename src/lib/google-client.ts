@@ -105,10 +105,7 @@ export const listDocuments = async (accessToken: string): Promise<Document[]> =>
 };
 
 export const getDocument = async (accessToken: string, documentId: string): Promise<FullDocument> => {
-    const client = createOAuth2Client();
-    client.setCredentials({ access_token: accessToken });
-
-    const docs = google.docs({ auth: client, version: 'v1' });
+    const docs = getDocsApi(accessToken);
 
     const response = await docs.documents.get({
         documentId,
@@ -117,93 +114,11 @@ export const getDocument = async (accessToken: string, documentId: string): Prom
     return response.data as FullDocument;
 };
 
-export const formatDocument = async (
-    accessToken: string,
-    documentId: string,
-    formatType: 'bold' | 'color' | 'font',
-) => {
+export const getDocsApi = (accessToken: string) => {
     const client = createOAuth2Client();
     client.setCredentials({ access_token: accessToken });
 
     const docs = google.docs({ auth: client, version: 'v1' });
 
-    // First get the document to determine content ranges
-    const document = await docs.documents.get({
-        documentId,
-    });
-
-    // Find the end index of the content
-    const endIndex = document.data.body?.content?.[0]?.endIndex || 1;
-
-    let requests: any[] = [];
-
-    switch (formatType) {
-        case 'bold':
-            requests = [
-                {
-                    updateTextStyle: {
-                        fields: 'bold',
-                        range: {
-                            endIndex: endIndex - 1,
-                            startIndex: 1,
-                        },
-                        textStyle: {
-                            bold: true,
-                        },
-                    },
-                },
-            ];
-            break;
-
-        case 'color':
-            requests = [
-                {
-                    updateTextStyle: {
-                        fields: 'foregroundColor',
-                        range: {
-                            endIndex: endIndex - 1,
-                            startIndex: 1,
-                        },
-                        textStyle: {
-                            foregroundColor: {
-                                color: {
-                                    rgbColor: {
-                                        blue: 1.0,
-                                        green: 0.0,
-                                        red: 0.0,
-                                    },
-                                },
-                            },
-                        },
-                    },
-                },
-            ];
-            break;
-
-        case 'font':
-            requests = [
-                {
-                    updateTextStyle: {
-                        fields: 'weightedFontFamily',
-                        range: {
-                            endIndex: endIndex - 1,
-                            startIndex: 1,
-                        },
-                        textStyle: {
-                            weightedFontFamily: {
-                                fontFamily: 'Arial',
-                            },
-                        },
-                    },
-                },
-            ];
-            break;
-    }
-
-    return await docs.documents.batchUpdate({
-        documentId,
-        requestBody: {
-            requests,
-        },
-    });
+    return docs;
 };

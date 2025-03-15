@@ -1,4 +1,4 @@
-import { formatDocument, getDocument, getValidAccessToken } from '@/lib/google-client';
+import { getDocsApi, getDocument, getValidAccessToken } from '@/lib/google-client';
 import { isUserLoggedIn } from '@/lib/session';
 import { Change } from '@/types/formatting';
 import { formatParagraphBody } from '@/utils/formatting';
@@ -51,7 +51,7 @@ export async function GET(req: NextRequest, props: { params: Promise<{ id: strin
         });
 
         return NextResponse.json({
-            requests,
+            requests: removeDuplicateChanges(requests),
         });
     } catch (error) {
         console.error(`Error generating preview for document ${params.id}:`, error);
@@ -61,6 +61,8 @@ export async function GET(req: NextRequest, props: { params: Promise<{ id: strin
 
 export async function POST(req: NextRequest, props: { params: Promise<{ id: string }> }) {
     const params = await props.params;
+    console.log('POST /documents/id/format', params);
+
     try {
         const loggedIn = await isUserLoggedIn();
 
@@ -74,19 +76,55 @@ export async function POST(req: NextRequest, props: { params: Promise<{ id: stri
             return NextResponse.json({ error: 'No access token available' }, { status: 401 });
         }
 
-        // Parse and validate request body
+        const docsApi = getDocsApi(accessToken);
+        const body = await req.json();
+        const changes = body.changes as Change[];
 
-        const documentId = params.id;
+        console.log('requests', JSON.stringify(changes, null, 2));
 
-        // Apply formatting
-        await formatDocument(accessToken, documentId, 'bold');
+        try {
+            await docsApi.documents.batchUpdate({
+                documentId: params.id,
+                requestBody: { requests: changes },
+            });
+        } catch (err: any) {
+            if (err.status === 500) {
+                console.warn('Initial request failed, retrying with reversed array of diff.');
+
+                await docsApi.documents.batchUpdate({
+                    documentId: params.id,
+                    requestBody: { requests: changes.reverse() },
+                });
+            } else {
+                throw err;
+            }
+        }
+
+        console.info(`Document updated successfully.`);
 
         return NextResponse.json({
             message: `Applied bold formatting to document`,
             success: true,
         });
     } catch (error) {
+        console.log(JSON.stringify(error));
         console.error(`Error formatting document ${params.id}:`, error);
         return NextResponse.json({ error: 'Failed to format document' }, { status: 500 });
     }
 }
+
+const removeDuplicateChanges = (changes: Change[]): Change[] => {
+    const uniqueChanges = [];
+    const seen = new Set<string>();
+
+    for (const change of changes) {
+        const changeString = JSON.stringify(change);
+
+        if (!seen.has(changeString)) {
+            seen.add(changeString);
+            uniqueChanges.push(change);
+        }
+    }
+
+    return uniqueChanges;
+};

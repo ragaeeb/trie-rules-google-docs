@@ -8,7 +8,7 @@ describe('formatting', () => {
         const trie = buildTrie([{ from: ['hadith'], options: { match: MatchType.Whole }, to: 'hadīth' }]);
 
         const actual = formatParagraphBody(
-            { paragraph: { elements: [{ textRun: { content: 'The hadith of Al-Dhahabi' } }] } },
+            { paragraph: { elements: [{ textRun: { content: 'The hadith of Al-Dhahabi', textStyle: {} } }] } },
             trie,
         );
 
@@ -29,21 +29,14 @@ describe('formatting', () => {
             {
                 paragraph: {
                     elements: [
-                        { textRun: { content: 'The ʿulamāʾʾ are scholars' } },
-                        { textRun: { textStyle: { link: 'link' } } },
+                        { textRun: { content: 'The ʿulamāʾʾ are scholars', textStyle: {} } },
+                        { textRun: { content: 'http://hadith.com', textStyle: { link: { url: 'link' } } } },
                     ],
                 },
             },
             trie,
         );
 
-        expect(actual).toEqual([
-            {
-                replaceAllText: {
-                    containsText: { matchCase: true, text: 'The ʿulamāʾʾ are scholars' },
-                    replaceText: 'The ʿulamāʾ are scholars',
-                },
-            },
-        ]);
+        expect(actual).toEqual([]);
     });
 });

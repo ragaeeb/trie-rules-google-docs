@@ -1,11 +1,6 @@
 import { ContentElement } from '@/types/document';
 import { Change } from '@/types/formatting';
-import {
-    normalizeApostrophes,
-    normalizeArabicPrefixesToAl,
-    normalizeDoubleApostrophes,
-    replaceSalutationsWithSymbol,
-} from 'bitaboom';
+import { normalizeApostrophes, normalizeArabicPrefixesToAl, replaceSalutationsWithSymbol } from 'bitaboom';
 import { searchAndReplace, TrieNode } from 'trie-rules';
 
 export const formatParagraphBody = (element: ContentElement, trie: TrieNode): Change[] => {
@@ -34,16 +29,13 @@ export const formatParagraphBody = (element: ContentElement, trie: TrieNode): Ch
             replaceSalutationsWithSymbol,
             searchAndReplaceWithTrie,
             normalizeArabicPrefixesToAl,
-            normalizeDoubleApostrophes,
         ].reduce((text, formatter) => formatter(text), paragraphText);
 
         if (modifiedText.trim() !== paragraphText.trim()) {
-            //console.trace(`${picocolors.dim(paragraphText)} -> ${picocolors.italic(modifiedText)}`);
-
             changes.push({
                 replaceAllText: {
-                    containsText: { matchCase: true, text: paragraphText },
-                    replaceText: modifiedText,
+                    containsText: { matchCase: true, text: paragraphText.trim() },
+                    replaceText: modifiedText.trim(),
                 },
             });
         }
