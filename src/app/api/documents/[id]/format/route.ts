@@ -1,5 +1,5 @@
-import { formatDocument, getDocument } from '@/lib/google-client';
-import { getAccessToken, isUserLoggedIn } from '@/lib/session';
+import { formatDocument, getDocument, getValidAccessToken } from '@/lib/google-client';
+import { isUserLoggedIn } from '@/lib/session';
 import { Change } from '@/types/formatting';
 import { formatParagraphBody } from '@/utils/formatting';
 import { NextRequest, NextResponse } from 'next/server';
@@ -28,7 +28,7 @@ export async function GET(req: NextRequest, props: { params: Promise<{ id: strin
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
-        const accessToken = await getAccessToken();
+        const accessToken = await getValidAccessToken();
 
         if (!accessToken) {
             return NextResponse.json({ error: 'No access token available' }, { status: 401 });
@@ -67,7 +67,7 @@ export async function POST(req: NextRequest, props: { params: Promise<{ id: stri
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
-        const accessToken = await getAccessToken();
+        const accessToken = await getValidAccessToken();
 
         if (!accessToken) {
             return NextResponse.json({ error: 'No access token available' }, { status: 401 });

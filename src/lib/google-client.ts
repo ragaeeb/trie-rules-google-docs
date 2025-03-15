@@ -2,6 +2,11 @@ import { FullDocument } from '@/types/document';
 import { OAuth2Client } from 'google-auth-library';
 import { google } from 'googleapis';
 
+import { clearSession, getSession, saveSession } from './session';
+
+// Buffer time (in ms) before token expiry to refresh - 30 seconds
+const TOKEN_EXPIRY_BUFFER = 30 * 1000;
+
 const SCOPES = [
     'https://www.googleapis.com/auth/documents',
     'https://www.googleapis.com/auth/userinfo.profile',
@@ -26,7 +31,53 @@ export const generateAuthUrl = (client: OAuth2Client) => {
 };
 
 export const getTokensFromCode = async (client: OAuth2Client, code: string) => {
-    return await client.getToken(code);
+    return client.getToken(code);
+};
+
+export const getValidAccessToken = async (): Promise<null | string> => {
+    const session = await getSession();
+
+    // If no token or not logged in, return null
+    if (!session.isLoggedIn || !session.accessToken) {
+        return null;
+    }
+
+    // If token is still valid (with buffer time)
+    if (session.expiresAt && session.expiresAt > Date.now() + TOKEN_EXPIRY_BUFFER) {
+        return session.accessToken;
+    }
+
+    // Token is expired or close to expiry, but we have a refresh token
+    if (session.refreshToken) {
+        try {
+            console.log('Access token expired, attempting to refresh');
+            const client = createOAuth2Client();
+            client.setCredentials({ refresh_token: session.refreshToken });
+
+            // This will use the refresh token to get a new access token
+            const { credentials } = await client.refreshAccessToken();
+
+            // Update session with new tokens
+            await saveSession({
+                ...session,
+                accessToken: credentials.access_token || undefined,
+                expiresAt: Date.now() + (credentials.expiry_date ? credentials.expiry_date - Date.now() : 3600 * 1000), // Default to 1 hour if no expiry provided
+            });
+
+            console.log('Successfully refreshed access token');
+            return credentials.access_token || null;
+        } catch (error) {
+            // If refresh fails, clear session and force re-auth
+            console.error('Failed to refresh token:', error);
+            await clearSession();
+            return null;
+        }
+    }
+
+    // No refresh token available
+    console.warn('Token expired and no refresh token available');
+    await clearSession();
+    return null;
 };
 
 export const fetchUserInfo = async (accessToken: string) => {

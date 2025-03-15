@@ -3,7 +3,9 @@ import { cookies } from 'next/headers';
 
 export type SessionData = {
     accessToken?: string;
+    expiresAt?: number;
     isLoggedIn: boolean;
+    refreshToken?: string; // Added refresh token
     userInfo?: {
         email: string;
         id: string;
@@ -50,6 +52,7 @@ export const clearSession = async () => {
     const session = await getSession();
     session.isLoggedIn = false;
     session.accessToken = undefined;
+    session.refreshToken = undefined;
     session.userInfo = undefined;
     await session.save();
 };

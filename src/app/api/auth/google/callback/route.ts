@@ -25,6 +25,7 @@ export async function GET(req: NextRequest) {
         // Save to session (memory only, not persisted to database)
         await saveSession({
             accessToken: tokens.access_token,
+            expiresAt: Date.now() + (tokens.expiry_date || 3600 * 1000), // Add expiry tracking
             isLoggedIn: true,
             userInfo: {
                 email: userInfo.email as string,

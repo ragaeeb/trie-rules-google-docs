@@ -1,5 +1,5 @@
-import { listDocuments } from '@/lib/google-client';
-import { clearSession, getAccessToken, isUserLoggedIn } from '@/lib/session';
+import { getValidAccessToken, listDocuments } from '@/lib/google-client';
+import { clearSession, isUserLoggedIn } from '@/lib/session';
 import { NextResponse } from 'next/server';
 
 export async function GET() {
@@ -10,7 +10,7 @@ export async function GET() {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
-        const accessToken = await getAccessToken();
+        const accessToken = await getValidAccessToken();
 
         if (!accessToken) {
             return NextResponse.json({ error: 'No access token available' }, { status: 401 });
