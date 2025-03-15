@@ -20,15 +20,19 @@ const getRules = async (): Promise<TrieNode> => {
 
 export async function GET(req: NextRequest, props: { params: Promise<{ id: string }> }) {
     const params = await props.params;
+    console.log('GET', params);
 
     try {
         const loggedIn = await isUserLoggedIn();
+        console.log('loggedIn', loggedIn);
 
         if (!loggedIn) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
         const accessToken = await getValidAccessToken();
+
+        console.log('accessToken', accessToken);
 
         if (!accessToken) {
             return NextResponse.json({ error: 'No access token available' }, { status: 401 });
