@@ -31,12 +31,14 @@ export default async function DashboardPage() {
                             />
                             <span>{userInfo.name}</span>
                         </div>
-                        <Link
-                            className="px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded-md text-sm"
-                            href="/api/auth/logout"
-                        >
-                            Sign Out
-                        </Link>
+                        {false && (
+                            <Link
+                                className="px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded-md text-sm"
+                                href="/api/auth/logout"
+                            >
+                                Sign Out
+                            </Link>
+                        )}
                     </div>
                 )}
             </header>
