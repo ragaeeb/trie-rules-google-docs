@@ -50,8 +50,19 @@ export const DocumentsList = () => {
 
     useEffect(() => {
         const previewFormatting = async (doc: Document) => {
-            const response = await (await fetch(`/api/documents/${doc.id}/format`)).json();
-            console.log('response', response);
+            try {
+                const response = await fetch(`/api/documents/${doc.id}/format`);
+                if (!response.ok) {
+                    // Handle error properly without redirecting
+                    console.error('Error fetching format preview:', await response.text());
+                    return;
+                }
+                const data = await response.json();
+                console.log('response', data);
+            } catch (err) {
+                console.error('Error in preview formatting:', err);
+                // Don't navigate away, just handle the error locally
+            }
         };
 
         if (selectedDoc) {
@@ -89,7 +100,10 @@ export const DocumentsList = () => {
                                     selectedDoc?.id === doc.id ? 'bg-blue-50' : ''
                                 }`}
                                 key={doc.id}
-                                onClick={() => setSelectedDoc(doc)}
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    setSelectedDoc(doc);
+                                }}
                             >
                                 <div className="flex items-center">
                                     <svg className="w-5 h-5 mr-2 text-blue-600" fill="currentColor" viewBox="0 0 20 20">

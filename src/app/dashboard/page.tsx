@@ -31,15 +31,18 @@ export default async function DashboardPage() {
                             />
                             <span>{userInfo.name}</span>
                         </div>
-                        {false && (
-                            <Link
-                                className="px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded-md text-sm"
-                                href="/api/auth/logout"
-                            >
-                                Sign Out
-                            </Link>
-                        )}
                     </div>
+                )}
+                {userInfo && (
+                    <Link
+                        className="px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded-md text-sm"
+                        href="/api/auth/logout"
+                        onClick={() => {
+                            console.log('Logout link clicked');
+                        }}
+                    >
+                        Sign Out
+                    </Link>
                 )}
             </header>
 
