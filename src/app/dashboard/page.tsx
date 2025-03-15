@@ -32,9 +32,9 @@ export default async function DashboardPage() {
                             />
                             <span>{userInfo.name}</span>
                         </div>
+                        <LogoutButton />
                     </div>
                 )}
-                {userInfo && <LogoutButton />}
             </header>
 
             <div className="flex-1">

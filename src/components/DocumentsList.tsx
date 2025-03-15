@@ -53,9 +53,20 @@ export const DocumentsList = () => {
         const previewFormatting = async (doc: Document) => {
             try {
                 console.log('formatting doc');
-                const response = await fetch(`/api/documents/${doc.id}/format`);
+                // Use a more explicit fetch with additional options
+                const response = await fetch(`/api/documents/${doc.id}/format`, {
+                    credentials: 'same-origin',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        // Add a custom header to help debug
+                        'X-Request-Type': 'ajax-call',
+                    },
+                    method: 'GET',
+                    // Most importantly, specify this is not a navigation
+                    mode: 'same-origin',
+                });
+
                 if (!response.ok) {
-                    // Handle error properly without redirecting
                     console.error('Error fetching format preview:', await response.text());
                     return;
                 }
@@ -63,7 +74,6 @@ export const DocumentsList = () => {
                 console.log('response', data);
             } catch (err) {
                 console.error('Error in preview formatting:', err);
-                // Don't navigate away, just handle the error locally
             }
         };
 
