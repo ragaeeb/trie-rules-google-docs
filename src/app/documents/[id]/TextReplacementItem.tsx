@@ -27,17 +27,13 @@ export const TextReplacementItem = ({
             <div className="flex-1">
                 <div className="flex items-center flex-wrap">
                     <span className="line-through text-gray-500 dark:text-gray-400 mr-3 group-hover:text-gray-600 dark:group-hover:text-gray-300 transition-colors duration-200">
-                        {change.replaceAllText.containsText.text}
+                        {change.from}
                     </span>
-                    <span className="text-primary dark:text-primary-dark font-medium">
-                        {change.replaceAllText.replaceText}
-                    </span>
+                    <span className="text-primary dark:text-primary-dark font-medium">{change.to}</span>
                 </div>
-
-                {change.replaceAllText.containsText.matchCase && (
-                    <span className="text-xs text-gray-500 dark:text-gray-400 mt-1 block">Match case: Yes</span>
-                )}
-
+                <span className="text-xs text-gray-500 dark:text-gray-400 mt-1 block">
+                    Match case: {!change.caseInsensitive ? 'Yes' : 'No'}
+                </span>
                 {successMessages[index] && (
                     <span className="text-green-500 dark:text-green-400 text-sm mt-1 block flex items-center animate-slide-right">
                         <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">

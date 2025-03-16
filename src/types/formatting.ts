@@ -1,9 +1,5 @@
 export type Change = {
-    replaceAllText: {
-        containsText: {
-            matchCase: boolean;
-            text: string;
-        };
-        replaceText: string;
-    };
+    caseInsensitive?: boolean;
+    from: string;
+    to: string;
 };

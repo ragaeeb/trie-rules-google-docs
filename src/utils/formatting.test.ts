@@ -14,10 +14,8 @@ describe('formatting', () => {
 
         expect(actual).toEqual([
             {
-                replaceAllText: {
-                    containsText: { matchCase: true, text: 'The hadith of Al-Dhahabi' },
-                    replaceText: 'The hadīth of al-Dhahabi',
-                },
+                from: 'The hadith of Al-Dhahabi',
+                to: 'The hadīth of al-Dhahabi',
             },
         ]);
     });

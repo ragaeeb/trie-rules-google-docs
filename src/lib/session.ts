@@ -56,15 +56,3 @@ export const clearSession = async () => {
     session.userInfo = undefined;
     await session.save();
 };
-
-// Get access token from session
-export const getAccessToken = async (): Promise<null | string> => {
-    const session = await getSession();
-    return session.accessToken || null;
-};
-
-// Check if user is logged in
-export const isUserLoggedIn = async (): Promise<boolean> => {
-    const session = await getSession();
-    return !!session.isLoggedIn;
-};

@@ -1,37 +1,42 @@
 import { FullDocument } from '@/types/document';
+import { Change } from '@/types/formatting';
 import { OAuth2Client } from 'google-auth-library';
 import { google } from 'googleapis';
 
+import { mapChangeToGoogleDocReplaceRequest } from './diff';
 import { clearSession, getSession, saveSession } from './session';
 
 // Buffer time (in ms) before token expiry to refresh - 30 seconds
 const TOKEN_EXPIRY_BUFFER = 30 * 1000;
 
-const SCOPES = [
-    'https://www.googleapis.com/auth/documents',
-    'https://www.googleapis.com/auth/userinfo.profile',
-    'https://www.googleapis.com/auth/userinfo.email',
-    'https://www.googleapis.com/auth/drive.metadata.readonly',
-];
-
-export const createOAuth2Client = () => {
-    return new OAuth2Client({
+export const createOAuth2Client = ({
+    accessToken,
+    refreshToken,
+}: { accessToken?: string; refreshToken?: string } = {}) => {
+    const client = new OAuth2Client({
         clientId: process.env.GOOGLE_CLIENT_ID,
         clientSecret: process.env.GOOGLE_CLIENT_SECRET,
         redirectUri: `${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/google/callback`,
     });
+    client.setCredentials({
+        ...(accessToken && { access_token: accessToken }),
+        ...(refreshToken && { refresh_token: refreshToken }),
+    });
+
+    return client;
 };
 
 export const generateAuthUrl = (client: OAuth2Client) => {
     return client.generateAuthUrl({
         access_type: 'offline',
         prompt: 'consent',
-        scope: SCOPES,
+        scope: [
+            'https://www.googleapis.com/auth/documents',
+            'https://www.googleapis.com/auth/userinfo.profile',
+            'https://www.googleapis.com/auth/userinfo.email',
+            'https://www.googleapis.com/auth/drive.metadata.readonly',
+        ],
     });
-};
-
-export const getTokensFromCode = async (client: OAuth2Client, code: string) => {
-    return client.getToken(code);
 };
 
 export const getValidAccessToken = async (): Promise<null | string> => {
@@ -51,8 +56,7 @@ export const getValidAccessToken = async (): Promise<null | string> => {
     if (session.refreshToken) {
         try {
             console.log('Access token expired, attempting to refresh');
-            const client = createOAuth2Client();
-            client.setCredentials({ refresh_token: session.refreshToken });
+            const client = createOAuth2Client({ refreshToken: session.refreshToken });
 
             // This will use the refresh token to get a new access token
             const { credentials } = await client.refreshAccessToken();
@@ -81,20 +85,14 @@ export const getValidAccessToken = async (): Promise<null | string> => {
 };
 
 export const fetchUserInfo = async (accessToken: string) => {
-    const client = createOAuth2Client();
-    client.setCredentials({ access_token: accessToken });
-
-    const oauth2 = google.oauth2({ auth: client, version: 'v2' });
+    const oauth2 = google.oauth2({ auth: createOAuth2Client({ accessToken }), version: 'v2' });
     const userInfo = await oauth2.userinfo.get();
 
     return userInfo.data;
 };
 
 export const listDocuments = async (accessToken: string): Promise<Document[]> => {
-    const client = createOAuth2Client();
-    client.setCredentials({ access_token: accessToken });
-
-    const drive = google.drive({ auth: client, version: 'v3' });
+    const drive = google.drive({ auth: createOAuth2Client({ accessToken }), version: 'v3' });
 
     const response = await drive.files.list({
         fields: 'files(id, name)',
@@ -105,20 +103,24 @@ export const listDocuments = async (accessToken: string): Promise<Document[]> =>
 };
 
 export const getDocument = async (accessToken: string, documentId: string): Promise<FullDocument> => {
-    const docs = getDocsApi(accessToken);
-
-    const response = await docs.documents.get({
+    const response = await getDocsApi(accessToken).documents.get({
         documentId,
     });
 
     return response.data as FullDocument;
 };
 
-export const getDocsApi = (accessToken: string) => {
-    const client = createOAuth2Client();
-    client.setCredentials({ access_token: accessToken });
+const getDocsApi = (accessToken: string) => {
+    return google.docs({ auth: createOAuth2Client({ accessToken }), version: 'v1' });
+};
 
-    const docs = google.docs({ auth: client, version: 'v1' });
+export const applyChangesToDoc = async (id: string, changes: Change[], { accessToken }: { accessToken: string }) => {
+    const requests = changes.map(mapChangeToGoogleDocReplaceRequest);
 
-    return docs;
+    console.log('applyChangesToDoc', JSON.stringify(requests, null, 2));
+
+    return getDocsApi(accessToken).documents.batchUpdate({
+        documentId: id,
+        requestBody: { requests },
+    });
 };

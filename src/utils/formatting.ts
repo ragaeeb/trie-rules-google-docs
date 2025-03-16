@@ -12,12 +12,7 @@ export const formatParagraphBody = (element: ContentElement, trie: TrieNode): Ch
         for (const el of element.paragraph.elements) {
             const textRun = el.textRun;
 
-            if (textRun?.textStyle?.link) {
-                console.warn(`Skipping link: ${textRun.content}`);
-                continue;
-            }
-
-            if (textRun?.content) {
+            if (!textRun?.textStyle?.link && textRun?.content) {
                 paragraphText += textRun.content;
             }
         }
@@ -33,10 +28,8 @@ export const formatParagraphBody = (element: ContentElement, trie: TrieNode): Ch
 
         if (modifiedText.trim() !== paragraphText.trim()) {
             changes.push({
-                replaceAllText: {
-                    containsText: { matchCase: true, text: paragraphText.trim() },
-                    replaceText: modifiedText.trim(),
-                },
+                from: paragraphText.trim(),
+                to: modifiedText.trim(),
             });
         }
     }

@@ -1,4 +1,4 @@
-import { createOAuth2Client, fetchUserInfo, getTokensFromCode } from '@/lib/google-client';
+import { createOAuth2Client, fetchUserInfo } from '@/lib/google-client';
 import { saveSession } from '@/lib/session';
 import { NextRequest, NextResponse } from 'next/server';
 
@@ -13,13 +13,12 @@ export async function GET(req: NextRequest) {
 
         // Exchange code for tokens
         const client = createOAuth2Client();
-        const { tokens } = await getTokensFromCode(client, code);
+        const { tokens } = await client.getToken(code);
 
         if (!tokens.access_token) {
             return NextResponse.redirect(`${process.env.NEXT_PUBLIC_BASE_URL}/login?error=no_token`);
         }
 
-        // Get user info
         const userInfo = await fetchUserInfo(tokens.access_token);
 
         // Save to session (memory only, not persisted to database)
@@ -35,7 +34,6 @@ export async function GET(req: NextRequest) {
             },
         });
 
-        // Redirect to dashboard
         return NextResponse.redirect(`${process.env.NEXT_PUBLIC_BASE_URL}/dashboard`);
     } catch (error) {
         console.error('Error during callback:', error);
