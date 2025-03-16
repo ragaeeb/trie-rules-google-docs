@@ -15,7 +15,7 @@ export default async function LoginPage(props: { searchParams: Promise<{ error?:
 
     return (
         <main className="flex min-h-screen flex-col items-center justify-center p-6">
-            <div className="w-full max-w-md p-8 space-y-8 bg-white rounded-xl shadow-lg">
+            <div className="w-full max-w-lg p-8 space-y-8 bg-white rounded-xl shadow-lg">
                 <div className="text-center">
                     <h1 className="text-3xl font-bold text-gray-500">Sign In</h1>
                     <p className="mt-2 text-gray-600">Continue to Google Docs Formatter</p>

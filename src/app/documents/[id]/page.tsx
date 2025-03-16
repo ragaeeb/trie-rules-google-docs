@@ -1,17 +1,18 @@
 'use client';
 
+import type { Change } from '@/types/formatting';
+
+import { LoadingSpinner } from '@/components/LoadingSpinner';
 import { useRouter } from 'next/navigation';
 import { use, useEffect, useState } from 'react';
 
-type Change = {
-    replaceAllText: {
-        containsText: {
-            matchCase: boolean;
-            text: string;
-        };
-        replaceText: string;
-    };
-};
+import type { SuccessMessages } from './types';
+
+import { ApplyAllButton } from './ApplyAllButton';
+import { BackButton } from './BackButton';
+import { ErrorMessage } from './ErrorMessage';
+import { ReplacementsList } from './ReplacementsList';
+import { SuccessMessage } from './SuccessMessage';
 
 export default function DocumentFormatPage(props: { params: Promise<{ id: string }> }) {
     const params = use(props.params);
@@ -21,17 +22,15 @@ export default function DocumentFormatPage(props: { params: Promise<{ id: string
     const [applyingIndex, setApplyingIndex] = useState<null | number>(null);
     const [applyingAll, setApplyingAll] = useState(false);
     const [error, setError] = useState<null | string>(null);
-    const [successMessages, setSuccessMessages] = useState<{ [key: number]: string }>({});
+    const [successMessages, setSuccessMessages] = useState<SuccessMessages>({});
     const [allSuccess, setAllSuccess] = useState(false);
 
-    // Fetch document info and format changes
     useEffect(() => {
         const fetchDocumentFormat = async () => {
             try {
                 setLoading(true);
                 setError(null);
 
-                // Then, get format changes
                 const formatResponse = await fetch(`/api/documents/${params.id}/format`);
 
                 if (!formatResponse.ok) {
@@ -55,6 +54,7 @@ export default function DocumentFormatPage(props: { params: Promise<{ id: string
         fetchDocumentFormat();
     }, [params.id, router]);
 
+    // Event handlers
     const applySingleChange = async (change: Change, index: number) => {
         try {
             setApplyingIndex(index);
@@ -148,15 +148,11 @@ export default function DocumentFormatPage(props: { params: Promise<{ id: string
         router.push('/dashboard');
     };
 
+    // Conditional rendering
     if (loading) {
         return (
             <div className="max-w-4xl mx-auto p-6">
-                <div className="flex justify-center items-center min-h-[300px]">
-                    <div className="text-center">
-                        <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-blue-600 border-r-transparent"></div>
-                        <p className="mt-4">Loading document format preview...</p>
-                    </div>
-                </div>
+                <LoadingSpinner />
             </div>
         );
     }
@@ -164,16 +160,8 @@ export default function DocumentFormatPage(props: { params: Promise<{ id: string
     if (error && Object.keys(successMessages).length === 0) {
         return (
             <div className="max-w-4xl mx-auto p-6">
-                <div className="bg-red-100 text-red-700 p-4 rounded-lg mb-6">
-                    <h2 className="text-lg font-semibold mb-2">Error</h2>
-                    <p>{error}</p>
-                </div>
-                <button
-                    className="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-md transition-colors"
-                    onClick={handleGoBack}
-                >
-                    Back to Dashboard
-                </button>
+                <ErrorMessage message={error} />
+                <BackButton onClick={handleGoBack} />
             </div>
         );
     }
@@ -181,120 +169,33 @@ export default function DocumentFormatPage(props: { params: Promise<{ id: string
     const allChangesApplied = changes.length > 0 && Object.keys(successMessages).length === changes.length;
 
     return (
-        <div className="max-w-4xl mx-auto p-6">
+        <div className="max-w-4xl mx-auto p-6 text-content dark:text-content-dark">
             <div className="mb-6">
-                <button
-                    className="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-md transition-colors mb-4"
-                    onClick={handleGoBack}
-                >
-                    ← Back to Dashboard
-                </button>
-
-                <p className="text-gray-600 mb-6">Review the changes that will be applied to your document</p>
+                <BackButton onClick={handleGoBack} />
+                <p className="text-gray-600 dark:text-gray-300 mb-6 animate-fade-in">
+                    Review the changes that will be applied to your document
+                </p>
             </div>
 
-            {error && (
-                <div className="bg-red-100 text-red-700 p-4 rounded-lg mb-6">
-                    <h2 className="text-lg font-semibold mb-2">Error</h2>
-                    <p>{error}</p>
-                </div>
-            )}
+            {error && <ErrorMessage message={error} />}
 
-            {allSuccess && (
-                <div className="bg-green-100 text-green-700 p-4 rounded-lg mb-6">
-                    <h2 className="text-lg font-semibold mb-2">Success!</h2>
-                    <p>All changes have been applied to the document.</p>
-                </div>
-            )}
+            {allSuccess && <SuccessMessage message="All changes have been applied to the document." />}
 
-            <div className="border rounded-lg overflow-hidden mb-6">
-                <div className="bg-gray-50 px-4 py-3 border-b flex justify-between items-center">
-                    <h2 className="font-medium">Text Replacements</h2>
-                    <span className="text-sm text-gray-500">
-                        {Object.keys(successMessages).length} of {changes.length} applied
-                    </span>
-                </div>
+            <ReplacementsList
+                applyingAll={applyingAll}
+                applyingIndex={applyingIndex}
+                changes={changes}
+                onApplyChange={applySingleChange}
+                successMessages={successMessages}
+            />
 
-                <div className="divide-y">
-                    {changes.length > 0 ? (
-                        changes.map((change, index) => (
-                            <div className="p-4" key={index}>
-                                <div className="flex items-center justify-between">
-                                    <div className="flex-1">
-                                        <div className="flex items-center flex-wrap">
-                                            <span className="line-through text-gray-500 mr-3">
-                                                {change.replaceAllText.containsText.text}
-                                            </span>
-                                            <span className="text-blue-600">{change.replaceAllText.replaceText}</span>
-                                        </div>
-                                        {change.replaceAllText.containsText.matchCase && (
-                                            <span className="text-xs text-gray-500 mt-1 block">Match case: Yes</span>
-                                        )}
-
-                                        {/* Success message */}
-                                        {successMessages[index] && (
-                                            <span className="text-green-500 text-sm mt-1 block">
-                                                ✓ {successMessages[index]}
-                                            </span>
-                                        )}
-                                    </div>
-
-                                    <button
-                                        className={`ml-4 px-3 py-1 rounded-md transition-colors flex items-center ${
-                                            successMessages[index]
-                                                ? 'bg-green-100 text-green-700 cursor-default'
-                                                : 'bg-blue-600 text-white hover:bg-blue-700 disabled:bg-blue-300 disabled:cursor-not-allowed'
-                                        }`}
-                                        disabled={applyingIndex === index || applyingAll || !!successMessages[index]}
-                                        onClick={() => applySingleChange(change, index)}
-                                    >
-                                        {applyingIndex === index ? (
-                                            <>
-                                                <span className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-solid border-white border-r-transparent mr-2"></span>
-                                                Applying...
-                                            </>
-                                        ) : successMessages[index] ? (
-                                            <>
-                                                <span className="text-lg mr-1">✓</span>
-                                                Applied
-                                            </>
-                                        ) : (
-                                            <>Apply</>
-                                        )}
-                                    </button>
-                                </div>
-                            </div>
-                        ))
-                    ) : (
-                        <div className="p-4 text-center text-gray-500">No text replacements to show</div>
-                    )}
-                </div>
-            </div>
-
-            <div className="flex justify-end">
-                <button
-                    className={`px-6 py-2 rounded-md transition-colors ${
-                        allChangesApplied
-                            ? 'bg-green-100 text-green-700 cursor-default'
-                            : 'bg-blue-600 text-white hover:bg-blue-700 disabled:bg-blue-300 disabled:cursor-not-allowed'
-                    }`}
-                    disabled={changes.length === 0 || applyingAll || allChangesApplied}
+            <div className="flex justify-end animate-fade-slide-up" style={{ animationDelay: '200ms' }}>
+                <ApplyAllButton
+                    disabled={changes.length === 0}
+                    isLoading={applyingAll}
+                    isSuccess={allChangesApplied}
                     onClick={applyAllChanges}
-                >
-                    {applyingAll ? (
-                        <span className="flex items-center">
-                            <span className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-solid border-white border-r-transparent mr-2"></span>
-                            Applying All Changes...
-                        </span>
-                    ) : allChangesApplied ? (
-                        <>
-                            <span className="text-lg mr-1">✓</span>
-                            All Changes Applied
-                        </>
-                    ) : (
-                        'Apply All Changes'
-                    )}
-                </button>
+                />
             </div>
         </div>
     );
