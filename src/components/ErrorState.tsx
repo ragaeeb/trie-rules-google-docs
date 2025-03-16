@@ -1,3 +1,11 @@
+/**
+ * Renders a styled error state UI.
+ *
+ * This component displays an error icon alongside a fixed title ("Error Loading Documents") and a custom error message.
+ * It is designed to visually indicate a loading error with styles that adapt to light and dark themes.
+ *
+ * @param message - The error message to display.
+ */
 export function ErrorState({ message }: { message: string }) {
     return (
         <div className="p-6 text-red-700 dark:text-red-300 bg-red-100 dark:bg-red-900/30 rounded-lg shadow-sm animate-slide-down">

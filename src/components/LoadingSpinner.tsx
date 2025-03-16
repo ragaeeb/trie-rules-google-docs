@@ -1,6 +1,16 @@
 /**
- * Reusable LoadingSpinner component
- * Can be used throughout the application for consistent loading states
+ * Renders a customizable loading spinner.
+ *
+ * Displays a centered spinner animation accompanied by an optional loading message. The container combines
+ * default layout and animation styles with optional border, background, and shadow styling when `withBorder` is enabled.
+ * Additional CSS classes can be added via `containerClassName` and the container's minimum height is settable via `minHeight`.
+ *
+ * @param containerClassName - Optional CSS classes to customize the container.
+ * @param message - Loading text displayed beneath the spinner (default: "Loading...").
+ * @param minHeight - Minimum height of the spinner container (default: "300px").
+ * @param withBorder - If true, applies border and styled background to the container (default: false).
+ *
+ * @returns A JSX element representing the loading spinner.
  */
 export function LoadingSpinner({
     containerClassName = '',

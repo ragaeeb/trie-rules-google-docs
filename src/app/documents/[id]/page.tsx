@@ -14,6 +14,18 @@ import { ErrorMessage } from './ErrorMessage';
 import { ReplacementsList } from './ReplacementsList';
 import { SuccessMessage } from './SuccessMessage';
 
+/**
+ * Renders a page that allows users to review and apply formatting changes to a document.
+ *
+ * This component fetches formatting changes for a document using an id provided asynchronously via props,
+ * and displays the changes for individual or batch application. It manages local state for loading, error,
+ * and success statuses, and redirects to the login page if the session has expired.
+ *
+ * @param props - An object containing a promise that resolves to an object with the document's id.
+ *
+ * @example
+ * <DocumentFormatPage params={fetchDocumentParams()} />
+ */
 export default function DocumentFormatPage(props: { params: Promise<{ id: string }> }) {
     const params = use(props.params);
     const router = useRouter();

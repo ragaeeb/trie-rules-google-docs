@@ -12,6 +12,15 @@ type Document = {
     name: string;
 };
 
+/**
+ * Renders a section that fetches and displays a list of documents.
+ *
+ * This component retrieves documents from the '/api/documents' endpoint when it mounts,
+ * managing loading, error, and empty states accordingly. While the data is loading, a spinner
+ * is shown. If an error occurs, an error message is displayed. If no documents are available,
+ * an empty state is rendered. Additionally, if a 401 error with a session expiration flag is
+ * encountered, the user is redirected to the login page.
+ */
 export function DocumentsSection() {
     const router = useRouter();
     const [documents, setDocuments] = useState<Document[]>([]);

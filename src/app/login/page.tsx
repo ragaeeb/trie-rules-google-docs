@@ -3,6 +3,18 @@ import { getSession } from '@/lib/session';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 
+/**
+ * Renders the login page and manages authentication flow.
+ *
+ * This asynchronous component awaits search parameters to detect a potential error code,
+ * retrieves the user's session status, and conditionally redirects authenticated users
+ * to the dashboard. If an error code is provided, it displays a corresponding user-friendly
+ * error message above the login form, which includes a Google authentication button and
+ * links to the Terms of Service and Privacy Policy.
+ *
+ * @param props - An object containing a promise that resolves to search parameters, including an optional error code.
+ * @returns A JSX element representing the login page.
+ */
 export default async function LoginPage(props: { searchParams: Promise<{ error?: string }> }) {
     const searchParams = await props.searchParams;
     const session = await getSession();
@@ -44,6 +56,12 @@ export default async function LoginPage(props: { searchParams: Promise<{ error?:
     );
 }
 
+/**
+ * Returns a user-friendly error message based on an authentication error code.
+ *
+ * @param errorCode - The error code representing a specific authentication issue.
+ * @returns The corresponding error message if the error code is recognized; otherwise, a default error message.
+ */
 function getErrorMessage(errorCode: string): string {
     const errorMessages: Record<string, string> = {
         auth_failed: 'Authentication failed. Please try again.',

@@ -2,6 +2,17 @@ import { createOAuth2Client, fetchUserInfo } from '@/lib/google-client';
 import { saveSession } from '@/lib/session';
 import { NextRequest, NextResponse } from 'next/server';
 
+/**
+ * Handles the OAuth2 callback for Google authentication.
+ *
+ * This asynchronous function processes the authentication callback by extracting the authorization code
+ * from the request's URL. It exchanges the code for access tokens via an OAuth2 client, then fetches the user's
+ * information using the retrieved token. On success, it saves session data (in memory) including user details and
+ * token expiry, and redirects the user to the dashboard. If the code is missing, the token is unavailable, or any
+ * error is encountered, it logs the error and redirects the user to the login page with an appropriate error message.
+ *
+ * @returns A redirect response to the dashboard on successful authentication, or to the login page on failure.
+ */
 export async function GET(req: NextRequest) {
     try {
         const searchParams = req.nextUrl.searchParams;

@@ -11,6 +11,15 @@ type UserInfo = {
     picture: string;
 };
 
+/**
+ * Renders the dashboard header.
+ *
+ * Displays the application icon and the title "Google Docs Formatter". When user information is provided via the
+ * `userInfo` prop, it additionally shows a user profile section that includes a circular profile image, the user's name,
+ * and a logout button.
+ *
+ * @param userInfo - Optional user details used to render the profile information.
+ */
 export function DashboardHeader({ userInfo }: DashboardHeaderProps) {
     return (
         <header className="flex flex-col sm:flex-row justify-between items-center mb-8 pb-4 border-b dark:border-gray-700 max-w-6xl mx-auto w-full animate-fade-in">

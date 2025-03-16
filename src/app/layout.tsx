@@ -7,6 +7,14 @@ export const metadata: Metadata = {
     title: 'Trie Rules + Google Docs',
 };
 
+/**
+ * Provides the root HTML layout for the application.
+ *
+ * This component wraps its nested content in an HTML structure with the language attribute set to "en"
+ * and applies global styles to the body element via CSS classes.
+ *
+ * @param children - The child elements to render within the layout.
+ */
 export default function RootLayout({
     children,
 }: Readonly<{

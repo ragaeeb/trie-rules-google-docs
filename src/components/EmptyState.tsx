@@ -1,3 +1,12 @@
+/**
+ * Renders an empty state UI indicating that no documents are available in Google Drive.
+ *
+ * This component displays a styled container featuring a document icon, a header
+ * with the title "No Documents Found", descriptive text, and a call-to-action button that
+ * opens Google Docs in a new tab for creating a new document.
+ *
+ * @returns A JSX element representing the empty state interface.
+ */
 export function EmptyState() {
     return (
         <div className="p-8 text-center bg-secondary dark:bg-secondary-dark rounded-lg shadow-sm border dark:border-gray-700 animate-fade-in">

@@ -2,6 +2,13 @@ import { getSession } from '@/lib/session';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 
+/**
+ * Renders the home page for unauthenticated users and redirects authenticated users.
+ *
+ * This asynchronous component retrieves the current user session. If the session indicates that the user is logged in, it performs a redirect to the dashboard ("/dashboard"). Otherwise, it returns a JSX element displaying a title, a service description, and a call-to-action button linking to the login page ("/login").
+ *
+ * @returns A JSX element representing the home page for users who are not logged in.
+ */
 export default async function Home() {
     const session = await getSession();
 

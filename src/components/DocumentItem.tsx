@@ -12,6 +12,18 @@ type DocumentItemProps = {
     index: number;
 };
 
+/**
+ * Renders a document as an animated list item with a navigable link to its detail page.
+ *
+ * The list item's animation delay is computed by multiplying the document's index in the list by 50ms.
+ * The component displays an icon representing the document, the document's name, and reveals a chevron icon when hovered.
+ *
+ * @param document - The document object containing an id used for navigation and a name to display.
+ * @param index - The document's index in the list, used to calculate the animation delay.
+ *
+ * @example
+ * <DocumentItem document={{ id: 'doc1', name: 'Document 1' }} index={0} />
+ */
 export function DocumentItem({ document, index }: DocumentItemProps) {
     return (
         <li className="animate-fade-slide-up" style={{ animationDelay: `${index * 50}ms` }}>

@@ -4,6 +4,14 @@ import { redirect } from 'next/navigation';
 import { DashboardHeader } from './DashboardHeader';
 import { DocumentsSection } from './DocumentsSection';
 
+/**
+ * Renders the dashboard page.
+ *
+ * This asynchronous component retrieves the current session to determine if the user is logged in.
+ * If the session indicates the user is not authenticated, it redirects to the login page.
+ * When authenticated, it extracts the user's information and renders the dashboard layout,
+ * which includes the DashboardHeader (fed with the user information) and the DocumentsSection.
+ */
 export default async function DashboardPage() {
     const session = await getSession();
 
