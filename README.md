@@ -1,5 +1,9 @@
 [![wakatime](https://wakatime.com/badge/user/a0b906ce-b8e7-4463-8bce-383238df6d4b/project/7a16c431-3110-4eb9-b431-91bcf2da9dfa.svg)](https://wakatime.com/badge/user/a0b906ce-b8e7-4463-8bce-383238df6d4b/project/7a16c431-3110-4eb9-b431-91bcf2da9dfa)
 [![codecov](https://codecov.io/gh/ragaeeb/trie-rules-google-docs/graph/badge.svg?token=YK8ZJE1EZW)](https://codecov.io/gh/ragaeeb/trie-rules-google-docs)
+![CodeRabbit Pull Request Reviews](https://img.shields.io/coderabbit/prs/github/ragaeeb/trie-rules-google-docs?utm_source=oss&utm_medium=github&utm_campaign=ragaeeb%2Ftrie-rules-google-docs&labelColor=171717&color=FF570A&link=https%3A%2F%2Fcoderabbit.ai&label=CodeRabbit+Reviews)
+![Vercel Deploy](https://deploy-badge.vercel.app/vercel/trie-rules-google-docs)
+[![Node.js CI](https://github.com/ragaeeb/trie-rules-google-docs/actions/workflows/build.yml/badge.svg)](https://github.com/ragaeeb/trie-rules-google-docs/actions/workflows/build.yml)
+![typescript](https://badgen.net/badge/icon/typescript?icon=typescript&label&color=blue)
 
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
