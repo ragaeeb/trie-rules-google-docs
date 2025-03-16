@@ -27,8 +27,8 @@ export const LogoutButton = () => {
 
     return (
         <form onSubmit={handleLogout}>
-            <button className="px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded-md text-sm" type="submit">
-                Sign Out
+            <button className="text-zinc-700 hover:text-zinc-200 backdrop-blur-lg bg-gradient-to-tr from-transparent via-[rgba(121,121,121,0.16)] to-transparent rounded-md py-2 px-6 shadow hover:shadow-zinc-400 duration-700">
+                Sign out
             </button>
         </form>
     );
