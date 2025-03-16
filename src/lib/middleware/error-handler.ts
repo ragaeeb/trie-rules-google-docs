@@ -4,7 +4,7 @@ import { clearSession } from '../session';
 
 type RouteHandler = (req: NextRequest, ...args: any[]) => Promise<NextResponse>;
 
-const BUSTED_AUTH_MESSAGES = ['Invalid Credentials', 'invalid_grant', 'expired', 'invalid_token'];
+const AUTH_ERROR_MESSAGES = ['Invalid Credentials', 'invalid_grant', 'expired', 'invalid_token'];
 
 export function withErrorHandling(handler: RouteHandler): RouteHandler {
     return async (req: NextRequest, ...args) => {
@@ -12,7 +12,7 @@ export function withErrorHandling(handler: RouteHandler): RouteHandler {
             // Pass all arguments to the handler
             return handler(req, ...args);
         } catch (error) {
-            if (error instanceof Error && BUSTED_AUTH_MESSAGES.some((message) => error.message.includes(message))) {
+            if (error instanceof Error && AUTH_ERROR_MESSAGES.some((message) => error.message.includes(message))) {
                 console.error('Google API authentication error:', error);
 
                 await clearSession();

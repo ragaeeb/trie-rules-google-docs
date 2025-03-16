@@ -1,5 +1,7 @@
 'use client';
 
+import type { Document } from '@/types/document';
+
 import { DocumentItem } from '@/components/DocumentItem';
 import { EmptyState } from '@/components/EmptyState';
 import { ErrorState } from '@/components/ErrorState';
@@ -7,16 +9,11 @@ import { LoadingSpinner } from '@/components/LoadingSpinner';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
-type Document = {
-    id: string;
-    name: string;
-};
-
 export function DocumentsSection() {
     const router = useRouter();
     const [documents, setDocuments] = useState<Document[]>([]);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<null | string>(null);
+    const [error, setError] = useState<string | undefined>();
 
     useEffect(() => {
         const fetchDocuments = async () => {

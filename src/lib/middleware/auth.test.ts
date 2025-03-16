@@ -21,7 +21,7 @@ const createMockHandler = () => {
 describe('auth', () => {
     describe('withAuth', () => {
         let mockRequest: NextRequest;
-        let mockHandler: any;
+        let mockHandler: ReturnType<typeof createMockHandler>;
         let consoleErrorSpy: any;
 
         beforeEach(() => {

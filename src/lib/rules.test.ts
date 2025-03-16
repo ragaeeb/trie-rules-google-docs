@@ -60,5 +60,15 @@ describe('Rules Module', () => {
 
             await expect(getRules()).rejects.toThrow('Network error');
         });
+
+        it('should handle empty rules array', async () => {
+            fetchMock.mockResolvedValue({
+                json: vi.fn().mockResolvedValue([]),
+            });
+
+            await getRules();
+
+            expect(buildTrie).toHaveBeenCalledWith([]);
+        });
     });
 });

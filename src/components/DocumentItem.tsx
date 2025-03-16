@@ -1,26 +1,30 @@
 'use client';
 
+import { Document } from '@/types/document';
 import Link from 'next/link';
-
-type Document = {
-    id: string;
-    name: string;
-};
 
 type DocumentItemProps = {
     document: Document;
     index: number;
 };
 
+const ANIMATION_DELAY_MS = 50;
+
 export function DocumentItem({ document, index }: DocumentItemProps) {
     return (
-        <li className="animate-fade-slide-up" style={{ animationDelay: `${index * 50}ms` }}>
+        <li className="animate-fade-slide-up" style={{ animationDelay: `${ANIMATION_DELAY_MS * index}ms` }}>
             <Link
                 className="px-4 py-3 flex items-center hover:bg-accent-hover dark:hover:bg-accent-dark-hover transition-colors block group"
                 href={`/documents/${document.id}`}
             >
                 <div className="text-primary dark:text-primary-dark mr-3 transition-transform duration-200 transform group-hover:scale-110">
-                    <svg className="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <svg
+                        aria-hidden="true"
+                        className="w-5 h-5 flex-shrink-0"
+                        fill="currentColor"
+                        role="img"
+                        viewBox="0 0 20 20"
+                    >
                         <path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4z" />
                         <path
                             clipRule="evenodd"
@@ -34,8 +38,10 @@ export function DocumentItem({ document, index }: DocumentItemProps) {
                 </span>
                 <div className="ml-auto opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                     <svg
+                        aria-hidden="true"
                         className="w-5 h-5 text-gray-400 dark:text-gray-500"
                         fill="none"
+                        role="img"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
                     >

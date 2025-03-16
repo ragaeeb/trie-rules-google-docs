@@ -10,6 +10,8 @@ export const ApplyAllButton = ({
     onClick: () => void;
 }) => (
     <button
+        aria-busy={isLoading}
+        aria-disabled={disabled || isLoading || isSuccess}
         className={`px-6 py-2 rounded-md transition-all duration-200 shadow-sm transform hover:scale-[1.02] active:scale-[0.98] ${
             isSuccess
                 ? 'bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300 cursor-default'

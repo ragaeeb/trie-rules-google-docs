@@ -5,7 +5,7 @@ type SessionData = {
     accessToken?: string;
     expiresAt?: number;
     isLoggedIn: boolean;
-    refreshToken?: string; // Added refresh token
+    refreshToken?: string;
     userInfo?: {
         email: string;
         id: string;

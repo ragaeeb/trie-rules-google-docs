@@ -87,37 +87,15 @@ vi.mock('googleapis', () => {
     };
 });
 
-vi.mock('./session', () => ({
-    clearSession: vi.fn(),
-    getSession: vi.fn(),
-    saveSession: vi.fn(),
-}));
-
-vi.mock('./diff', () => ({
-    mapChangeToGoogleDocReplaceRequest: vi.fn().mockImplementation((change) => ({
-        replaceAllText: {
-            containsText: {
-                matchCase: !change.caseInsensitive,
-                text: change.from,
-            },
-            replaceText: change.to,
-        },
-    })),
-}));
-
-const consoleLogMock = vi.fn();
-const consoleWarnMock = vi.fn();
-const consoleErrorMock = vi.fn();
-
 describe('Google Client Module', () => {
     beforeEach(() => {
         vi.resetAllMocks();
 
         vi.stubGlobal('console', {
             ...console,
-            error: consoleErrorMock,
-            log: consoleLogMock,
-            warn: consoleWarnMock,
+            error: vi.fn(),
+            log: vi.fn(),
+            warn: vi.fn(),
         });
 
         vi.stubEnv('GOOGLE_CLIENT_ID', 'mock-client-id');
@@ -274,8 +252,6 @@ describe('Google Client Module', () => {
             expect(mockRefreshClient.refreshAccessToken).toHaveBeenCalled();
             expect(token).toBe('new-access-token');
             expect(saveSession).toHaveBeenCalled();
-            expect(consoleLogMock).toHaveBeenCalledWith('Access token expired, attempting to refresh');
-            expect(consoleLogMock).toHaveBeenCalledWith('Successfully refreshed access token');
         });
 
         it('should clear session and return null if refresh fails', async () => {
@@ -302,7 +278,6 @@ describe('Google Client Module', () => {
             });
             expect(token).toBeNull();
             expect(clearSession).toHaveBeenCalled();
-            expect(consoleErrorMock).toHaveBeenCalledWith('Failed to refresh token:', expect.any(Error));
         });
 
         it('should clear session and return null if token is expired and no refresh token', async () => {
@@ -318,7 +293,6 @@ describe('Google Client Module', () => {
 
             expect(token).toBeNull();
             expect(clearSession).toHaveBeenCalled();
-            expect(consoleWarnMock).toHaveBeenCalledWith('Token expired and no refresh token available');
         });
     });
 

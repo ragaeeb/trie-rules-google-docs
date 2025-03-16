@@ -35,7 +35,6 @@ export default {
                 primary: '#3b82f6', // blue-500
                 // Dark mode colors
                 'primary-dark': '#3b82f6', // blue-500
-
                 'primary-dark-disabled': '#1e40af', // blue-800
                 'primary-dark-hover': '#60a5fa', // blue-400
                 'primary-disabled': '#93c5fd', // blue-300
