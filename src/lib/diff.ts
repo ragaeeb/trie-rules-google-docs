@@ -1,14 +1,26 @@
 import { Change } from '@/types/formatting';
 
+/**
+ * Removes duplicate changes from the provided array
+ */
 export const removeDuplicateChanges = (changes: Change[]): Change[] => {
-    const uniqueChanges = [];
-    const seen = new Set<string>();
+    const uniqueChanges: Change[] = [];
+    const seen = new Map<string, Set<string>>();
 
     for (const change of changes) {
-        const changeString = JSON.stringify(change);
+        const fromKey = change.from;
 
-        if (!seen.has(changeString)) {
-            seen.add(changeString);
+        if (!seen.has(fromKey)) {
+            seen.set(fromKey, new Set());
+        }
+
+        // Create a unique identifier for the 'to' and 'caseInsensitive' values
+        const toKey = `${change.to}:${change.caseInsensitive === undefined ? 'undefined' : change.caseInsensitive}`;
+        const seenSet = seen.get(fromKey)!;
+
+        // If we haven't seen this exact change before, add it to our results
+        if (!seenSet.has(toKey)) {
+            seenSet.add(toKey);
             uniqueChanges.push(change);
         }
     }

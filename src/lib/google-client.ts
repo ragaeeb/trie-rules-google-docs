@@ -117,8 +117,6 @@ const getDocsApi = (accessToken: string) => {
 export const applyChangesToDoc = async (id: string, changes: Change[], { accessToken }: { accessToken: string }) => {
     const requests = changes.map(mapChangeToGoogleDocReplaceRequest);
 
-    console.log('applyChangesToDoc', JSON.stringify(requests, null, 2));
-
     return getDocsApi(accessToken).documents.batchUpdate({
         documentId: id,
         requestBody: { requests },

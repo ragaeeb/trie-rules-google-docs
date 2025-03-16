@@ -1,7 +1,7 @@
 import { getIronSession } from 'iron-session';
 import { cookies } from 'next/headers';
 
-export type SessionData = {
+type SessionData = {
     accessToken?: string;
     expiresAt?: number;
     isLoggedIn: boolean;
@@ -14,30 +14,21 @@ export type SessionData = {
     };
 };
 
-const sessionOptions = {
-    cookieName: 'google-docs-formatter-session',
-    cookieOptions: {
-        httpOnly: true,
-        path: '/',
-        sameSite: 'lax' as const,
-        secure: process.env.NODE_ENV === 'production',
-    },
-    password: process.env.SESSION_SECRET as string,
-};
-
-// Helper to get the session on the server side
 export const getSession = async () => {
-    const session = await getIronSession<SessionData>(await cookies(), sessionOptions);
+    const session = await getIronSession<SessionData>(await cookies(), {
+        cookieName: 'google-docs-formatter-session',
+        cookieOptions: {
+            httpOnly: true,
+            path: '/',
+            sameSite: 'lax',
+            secure: process.env.NODE_ENV === 'production',
+        },
+        password: process.env.SESSION_SECRET as string,
+    });
 
-    // Initialize empty session if needed
-    if (!session.isLoggedIn) {
-        session.isLoggedIn = false;
-    }
-
-    return session;
+    return { ...session, isLoggedIn: false };
 };
 
-// Helper to save session data
 export const saveSession = async (session: SessionData) => {
     const currentSession = await getSession();
 
@@ -47,7 +38,6 @@ export const saveSession = async (session: SessionData) => {
     return currentSession;
 };
 
-// Helper to clear session
 export const clearSession = async () => {
     const session = await getSession();
     session.isLoggedIn = false;

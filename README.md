@@ -1,4 +1,5 @@
 [![wakatime](https://wakatime.com/badge/user/a0b906ce-b8e7-4463-8bce-383238df6d4b/project/7a16c431-3110-4eb9-b431-91bcf2da9dfa.svg)](https://wakatime.com/badge/user/a0b906ce-b8e7-4463-8bce-383238df6d4b/project/7a16c431-3110-4eb9-b431-91bcf2da9dfa)
+[![codecov](https://codecov.io/gh/ragaeeb/trie-rules-google-docs/graph/badge.svg?token=YK8ZJE1EZW)](https://codecov.io/gh/ragaeeb/trie-rules-google-docs)
 
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
@@ -19,8 +20,6 @@ bun dev
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
 ## Learn More
 
