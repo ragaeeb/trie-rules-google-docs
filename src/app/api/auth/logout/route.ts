@@ -3,8 +3,6 @@ import { NextResponse } from 'next/server';
 
 export async function POST() {
     try {
-        console.log('Logout endpoint called');
-
         await clearSession();
         return NextResponse.redirect(`${process.env.NEXT_PUBLIC_BASE_URL}/login`);
     } catch (error) {

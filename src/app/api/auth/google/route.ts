@@ -3,13 +3,9 @@ import { NextResponse } from 'next/server';
 
 export async function GET() {
     try {
-        console.log('auth/google/route');
-        const client = createOAuth2Client();
-        const authUrl = generateAuthUrl(client);
-
         return new Response(null, {
             headers: {
-                Location: authUrl,
+                Location: generateAuthUrl(createOAuth2Client()),
             },
             status: 302,
         });
