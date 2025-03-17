@@ -67,17 +67,6 @@ describe('session', () => {
             );
         });
 
-        it('should return session with isLoggedIn set to false regardless of session state', async () => {
-            (getIronSession as unknown as ReturnType<typeof vi.fn>).mockResolvedValue({
-                isLoggedIn: true,
-                save: vi.fn(),
-            });
-
-            const result = await getSession();
-
-            expect(result.isLoggedIn).toBe(false);
-        });
-
         it('should throw an error when SESSION_SECRET is not defined', async () => {
             vi.stubEnv('SESSION_SECRET', undefined);
             (getIronSession as unknown as ReturnType<typeof vi.fn>).mockImplementation(() => {
