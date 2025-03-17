@@ -9,7 +9,6 @@ import { NextRequest, NextResponse } from 'next/server';
 
 const getReplacementsForDocument = async (request: NextRequest, props: { params: Promise<{ id: string }> }) => {
     const params = await props.params;
-    console.log('/documents/id/format', params);
 
     const [document, rules] = await Promise.all([getDocument(request.accessToken, params.id), getRules()]);
 

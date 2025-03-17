@@ -26,7 +26,7 @@ export const getSession = async () => {
         password: process.env.SESSION_SECRET as string,
     });
 
-    return { ...session, isLoggedIn: false };
+    return { ...session, isLoggedIn: session.isLoggedIn || false };
 };
 
 export const saveSession = async (session: SessionData) => {
